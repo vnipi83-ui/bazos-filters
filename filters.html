@@ -5,15 +5,17 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
     <style>
-        body { font-family: Arial, sans-serif; padding: 20px; background-color: var(--tg-theme-bg-color); color: var(--tg-theme-text-color); }
-        .input-group { margin-bottom: 15px; }
-        label { display: block; margin-bottom: 5px; font-weight: bold; }
-        input, select { width: 100%; padding: 10px; border-radius: 8px; border: 1px solid #ccc; box-sizing: border-box; }
-        .btn { background: #3390ec; color: white; border: none; width: 100%; padding: 12px; border-radius: 8px; font-size: 16px; margin-top: 20px; }
+        body { font-family: Arial, sans-serif; padding: 15px; background-color: var(--tg-theme-bg-color); color: var(--tg-theme-text-color); }
+        .input-group { margin-bottom: 12px; }
+        label { display: block; margin-bottom: 5px; font-weight: bold; font-size: 14px; }
+        input, select { width: 100%; padding: 10px; border-radius: 8px; border: 1px solid #ccc; box-sizing: border-box; background: var(--tg-theme-secondary-bg-color); color: var(--tg-theme-text-color); }
+        .btn { background: #3390ec; color: white; border: none; width: 100%; padding: 12px; border-radius: 8px; font-size: 16px; margin-top: 15px; cursor: pointer; }
+        .row { display: flex; gap: 10px; }
+        .row > div { flex: 1; }
     </style>
 </head>
 <body>
-    <h3>🚗 Налаштування пошуку</h3>
+    <h3>⚙️ Параметри пошуку</h3>
     
     <div class="input-group">
         <label>Марка авто:</label>
@@ -22,40 +24,55 @@
             <option value="Skoda">Skoda</option>
             <option value="Volkswagen">Volkswagen</option>
             <option value="BMW">BMW</option>
+            <option value="Audi">Audi</option>
+            <option value="Mercedes">Mercedes-Benz</option>
+            <option value="Hyundai">Hyundai</option>
+            <option value="Toyota">Toyota</option>
+            <option value="Ford">Ford</option>
+            <option value="Peugeot">Peugeot</option>
         </select>
     </div>
 
     <div class="input-group">
-        <label>Ціна (Kč) від - до:</label>
-        <div style="display: flex; gap: 10px;">
-            <input type="number" id="min_price" placeholder="Від">
-            <input type="number" id="max_price" placeholder="До">
+        <label>Модель (якщо потрібно):</label>
+        <input type="text" id="model" placeholder="Наприклад: Octavia">
+    </div>
+
+    <div class="row">
+        <div class="input-group">
+            <label>Ціна до (Kč):</label>
+            <input type="number" id="max_price" placeholder="200000">
+        </div>
+        <div class="input-group">
+            <label>Рік від:</label>
+            <input type="number" id="min_year" placeholder="2015">
         </div>
     </div>
 
     <div class="input-group">
-        <label>Рік від - до:</label>
-        <div style="display: flex; gap: 10px;">
-            <input type="number" id="min_year" placeholder="1990">
-            <input type="number" id="max_year" placeholder="2026">
-        </div>
+        <label>⏱ Тривалість пошуку (Параграф #03):</label>
+        <select id="duration">
+            <option value="12">12 годин</option>
+            <option value="24" selected>24 години</option>
+            <option value="48">48 годин</option>
+        </select>
     </div>
 
-    <button class="btn" onclick="sendData()">🔍 Запустити моніторинг</button>
+    <button class="btn" onclick="sendData()">🚀 Запустити моніторинг</button>
 
     <script>
         const tg = window.Telegram.WebApp;
-        tg.expand(); // Розгорнути на весь екран
+        tg.expand();
 
         function sendData() {
             const data = {
                 brand: document.getElementById('brand').value,
-                min_price: document.getElementById('min_price').value,
+                model: document.getElementById('model').value,
                 max_price: document.getElementById('max_price').value,
                 min_year: document.getElementById('min_year').value,
-                max_year: document.getElementById('max_year').value
+                duration: document.getElementById('duration').value
             };
-            tg.sendData(JSON.stringify(data)); // Відправка даних боту
+            tg.sendData(JSON.stringify(data));
             tg.close();
         }
     </script>
