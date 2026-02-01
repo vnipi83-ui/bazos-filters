@@ -6,36 +6,56 @@
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
     <style>
         body { font-family: Arial, sans-serif; padding: 15px; background-color: var(--tg-theme-bg-color); color: var(--tg-theme-text-color); }
-        .input-group { margin-bottom: 12px; }
+        .input-group { margin-bottom: 15px; }
         label { display: block; margin-bottom: 5px; font-weight: bold; font-size: 14px; }
-        input, select { width: 100%; padding: 10px; border-radius: 8px; border: 1px solid #ccc; box-sizing: border-box; background: var(--tg-theme-secondary-bg-color); color: var(--tg-theme-text-color); }
-        .btn { background: #3390ec; color: white; border: none; width: 100%; padding: 12px; border-radius: 8px; font-size: 16px; margin-top: 15px; cursor: pointer; }
+        input, select { width: 100%; padding: 12px; border-radius: 8px; border: 1px solid #ccc; box-sizing: border-box; background: var(--tg-theme-secondary-bg-color); color: var(--tg-theme-text-color); font-size: 16px; }
+        .btn { background: #3390ec; color: white; border: none; width: 100%; padding: 14px; border-radius: 8px; font-size: 16px; margin-top: 10px; cursor: pointer; font-weight: bold; }
         .row { display: flex; gap: 10px; }
         .row > div { flex: 1; }
+        .hint { font-size: 12px; color: var(--tg-theme-hint-color); margin-top: 3px; }
     </style>
 </head>
 <body>
     <h3>⚙️ Параметри пошуку</h3>
     
     <div class="input-group">
-        <label>Марка авто:</label>
-        <select id="brand">
-            <option value="all">Усі марки</option>
-            <option value="Skoda">Skoda</option>
-            <option value="Volkswagen">Volkswagen</option>
-            <option value="BMW">BMW</option>
+        <label>Марка авто (зі списку Bazoš):</label>
+        <select id="brand" onchange="updateModels()">
+            <option value="all">🔍 Усі марки</option>
+            <option value="Alfa Romeo">Alfa Romeo</option>
             <option value="Audi">Audi</option>
-            <option value="Mercedes">Mercedes-Benz</option>
-            <option value="Hyundai">Hyundai</option>
-            <option value="Toyota">Toyota</option>
+            <option value="BMW">BMW</option>
+            <option value="Citroën">Citroën</option>
+            <option value="Dacia">Dacia</option>
+            <option value="Fiat">Fiat</option>
             <option value="Ford">Ford</option>
+            <option value="Honda">Honda</option>
+            <option value="Hyundai">Hyundai</option>
+            <option value="Chevrolet">Chevrolet</option>
+            <option value="Kia">Kia</option>
+            <option value="Mazda">Mazda</option>
+            <option value="Mercedes-Benz">Mercedes-Benz</option>
+            <option value="Mitsubishi">Mitsubishi</option>
+            <option value="Nissan">Nissan</option>
+            <option value="Opel">Opel</option>
             <option value="Peugeot">Peugeot</option>
+            <option value="Renault">Renault</option>
+            <option value="Seat">Seat</option>
+            <option value="Suzuki">Suzuki</option>
+            <option value="Škoda">Škoda</option>
+            <option value="Toyota">Toyota</option>
+            <option value="Volkswagen">Volkswagen</option>
+            <option value="Volvo">Volvo</option>
+            <option value="Ostatní značky">Ostatní značky (Інші)</option>
         </select>
     </div>
 
     <div class="input-group">
-        <label>Модель (якщо потрібно):</label>
-        <input type="text" id="model" placeholder="Наприклад: Octavia">
+        <label>Модель:</label>
+        <input type="text" id="model" list="models-list" placeholder="Оберіть марку, потім пишіть..." disabled>
+        <datalist id="models-list">
+            </datalist>
+        <div class="hint">Почніть вводити назву, щоб побачити список.</div>
     </div>
 
     <div class="row">
@@ -45,12 +65,12 @@
         </div>
         <div class="input-group">
             <label>Рік від:</label>
-            <input type="number" id="min_year" placeholder="2015">
+            <input type="number" id="min_year" placeholder="2010">
         </div>
     </div>
 
     <div class="input-group">
-        <label>⏱ Тривалість пошуку (Параграф #03):</label>
+        <label>⏱ Тривалість сесії:</label>
         <select id="duration">
             <option value="12">12 годин</option>
             <option value="24" selected>24 години</option>
@@ -63,6 +83,63 @@
     <script>
         const tg = window.Telegram.WebApp;
         tg.expand();
+
+        // Велика база моделей (зібрана з інтернету для Чехії)
+        const carDatabase = {
+            "Alfa Romeo": ["159", "156", "Giulietta", "MiTo", "147", "GT", "Brera", "Stelvio", "Giulia"],
+            "Audi": ["A4", "A6", "A3", "A5", "Q7", "Q5", "A8", "TT", "Q3", "A1", "A7", "Q8", "e-tron"],
+            "BMW": ["Řada 3", "Řada 5", "X5", "X3", "Řada 1", "X1", "Řada 7", "X6", "Řada 4", "X4", "i3"],
+            "Citroën": ["Berlingo", "C3", "C4", "C5", "C4 Picasso", "Jumper", "C1", "Xsara Picasso", "C-Elysee"],
+            "Dacia": ["Duster", "Sandero", "Logan", "Dokker", "Lodgy", "Jogger", "Spring"],
+            "Fiat": ["Ducato", "Punto", "500", "Panda", "Doblo", "Tipo", "Bravo", "Freemont", "Croma"],
+            "Ford": ["Focus", "Mondeo", "Fiesta", "S-Max", "Transit", "Galaxy", "Kuga", "C-Max", "Fusion", "Ranger"],
+            "Honda": ["Civic", "CR-V", "Accord", "Jazz", "HR-V", "City"],
+            "Hyundai": ["i30", "Tucson", "i20", "ix35", "Santa Fe", "i40", "i10", "Kona", "Getz"],
+            "Chevrolet": ["Cruze", "Spark", "Aveo", "Captiva", "Orlando", "Lacetti", "Camaro"],
+            "Kia": ["Cee'd", "Sportage", "Rio", "Sorento", "Picanto", "Stonic", "Venga", "Carens"],
+            "Mazda": ["6", "3", "CX-5", "5", "CX-3", "2", "MX-5", "CX-30"],
+            "Mercedes-Benz": ["Třída C", "Třída E", "Třída A", "Třída S", "ML", "GLE", "Vito", "Sprinter", "CLA", "GLA", "V-Class"],
+            "Mitsubishi": ["Outlander", "ASX", "Lancer", "Colt", "Pajero", "L200", "Eclipse Cross"],
+            "Nissan": ["Qashqai", "Juke", "X-Trail", "Micra", "Navara", "Note", "Leaf", "Patrol"],
+            "Opel": ["Astra", "Insignia", "Corsa", "Zafira", "Meriva", "Vectra", "Mokka", "Vivaro", "Combo"],
+            "Peugeot": ["206", "307", "308", "207", "407", "3008", "5008", "Partner", "Boxer", "208", "508"],
+            "Renault": ["Megane", "Clio", "Scenic", "Laguna", "Twingo", "Captur", "Master", "Trafic", "Kangoo", "Thalia"],
+            "Seat": ["Leon", "Ibiza", "Altea", "Toledo", "Alhambra", "Ateca", "Arona", "Cordoba"],
+            "Suzuki": ["Vitara", "Swift", "SX4", "S-Cross", "Jimny", "Grand Vitara", "Ignis"],
+            "Škoda": ["Octavia", "Fabia", "Superb", "Kodiaq", "Karoq", "Rapid", "Yeti", "Scala", "Kamiq", "Citigo", "Roomster"],
+            "Toyota": ["Yaris", "Auris", "Corolla", "RAV4", "Avensis", "Aygo", "C-HR", "Land Cruiser", "Hilux", "Prius"],
+            "Volkswagen": ["Golf", "Passat", "Tiguan", "Touran", "Polo", "Transporter", "Caddy", "Sharan", "Touareg", "Arteon", "Up!"],
+            "Volvo": ["XC60", "V60", "XC90", "V40", "V90", "S60", "S90", "V50", "V70", "S80"]
+        };
+
+        function updateModels() {
+            const brandSelect = document.getElementById('brand');
+            const modelInput = document.getElementById('model');
+            const dataList = document.getElementById('models-list');
+            const selectedBrand = brandSelect.value;
+
+            // Очищення списку
+            dataList.innerHTML = '';
+            modelInput.value = '';
+
+            if (selectedBrand === 'all') {
+                modelInput.disabled = true;
+                modelInput.placeholder = "Спочатку оберіть марку";
+                return;
+            }
+
+            // Активація поля та наповнення списку
+            modelInput.disabled = false;
+            modelInput.placeholder = `Введіть модель ${selectedBrand}...`;
+
+            if (carDatabase[selectedBrand]) {
+                carDatabase[selectedBrand].forEach(model => {
+                    const option = document.createElement('option');
+                    option.value = model;
+                    dataList.appendChild(option);
+                });
+            }
+        }
 
         function sendData() {
             const data = {
