@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://telegram.org/js/telegram-web-app.js"></script>
+    <style>
+        body { font-family: Arial, sans-serif; padding: 20px; background-color: var(--tg-theme-bg-color); color: var(--tg-theme-text-color); }
+        .input-group { margin-bottom: 15px; }
+        label { display: block; margin-bottom: 5px; font-weight: bold; }
+        input, select { width: 100%; padding: 10px; border-radius: 8px; border: 1px solid #ccc; box-sizing: border-box; }
+        .btn { background: #3390ec; color: white; border: none; width: 100%; padding: 12px; border-radius: 8px; font-size: 16px; margin-top: 20px; }
+    </style>
+</head>
+<body>
+    <h3>🚗 Налаштування пошуку</h3>
+    
+    <div class="input-group">
+        <label>Марка авто:</label>
+        <select id="brand">
+            <option value="all">Усі марки</option>
+            <option value="Skoda">Skoda</option>
+            <option value="Volkswagen">Volkswagen</option>
+            <option value="BMW">BMW</option>
+        </select>
+    </div>
+
+    <div class="input-group">
+        <label>Ціна (Kč) від - до:</label>
+        <div style="display: flex; gap: 10px;">
+            <input type="number" id="min_price" placeholder="Від">
+            <input type="number" id="max_price" placeholder="До">
+        </div>
+    </div>
+
+    <div class="input-group">
+        <label>Рік від - до:</label>
+        <div style="display: flex; gap: 10px;">
+            <input type="number" id="min_year" placeholder="1990">
+            <input type="number" id="max_year" placeholder="2026">
+        </div>
+    </div>
+
+    <button class="btn" onclick="sendData()">🔍 Запустити моніторинг</button>
+
+    <script>
+        const tg = window.Telegram.WebApp;
+        tg.expand(); // Розгорнути на весь екран
+
+        function sendData() {
+            const data = {
+                brand: document.getElementById('brand').value,
+                min_price: document.getElementById('min_price').value,
+                max_price: document.getElementById('max_price').value,
+                min_year: document.getElementById('min_year').value,
+                max_year: document.getElementById('max_year').value
+            };
+            tg.sendData(JSON.stringify(data)); // Відправка даних боту
+            tg.close();
+        }
+    </script>
+</body>
+</html>
