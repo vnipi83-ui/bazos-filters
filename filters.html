@@ -28,10 +28,19 @@
         <div class="input-group"><label>Ціна до (Kč):</label><input type="number" id="max_price" placeholder="напр. 200000"></div>
         <div class="input-group"><label>Рік від:</label><input type="number" id="min_year" placeholder="2015"></div>
     </div>
-    <div class="input-group"><label>Пробіг до (км):</label><input type="number" id="max_mileage" placeholder="напр. 150000"></div>
-    <div class="input-group">
-        <label>⏱ Тривалість:</label>
-        <select id="duration"><option value="12">12 годин</option><option value="24" selected>24 години</option><option value="48">48 годин</option></select>
+    <div class="row">
+        <div class="input-group">
+            <label>Пробіг до (км):</label>
+            <input type="number" id="max_mileage" placeholder="напр. 150000">
+        </div>
+        <div class="input-group">
+            <label>⏱ Тривалість:</label>
+            <select id="duration">
+                <option value="12">12 годин</option>
+                <option value="24" selected>24 години</option>
+                <option value="48">48 годин</option>
+            </select>
+        </div>
     </div>
     <button class="btn" onclick="sendData()">🚀 Запустити моніторинг</button>
 
