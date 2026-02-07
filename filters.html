@@ -73,7 +73,7 @@
         <label>Марка авто:</label>
         <select id="brand" onchange="updateModels()">
             <option value="all">Усі марки</option>
-            </select>
+        </select>
     </div>
 
     <div class="input-group">
@@ -89,15 +89,15 @@
             <input type="number" id="max_price" placeholder="напр. 250000">
         </div>
         <div class="input-group">
-            <label>Рік від:</label>
-            <input type="number" id="min_year" placeholder="2012">
+            <label>Рік до:</label>
+            <input type="number" id="max_year" placeholder="напр. 2019">
         </div>
     </div>
 
     <div class="row">
         <div class="input-group">
             <label>Пробіг до (км):</label>
-            <input type="number" id="max_mileage" placeholder="напр. 180000">
+            <input type="number" id="max_mileage" placeholder="напр. 150000">
         </div>
         <div class="input-group">
             <label>⏱ Тривалість:</label>
@@ -115,7 +115,6 @@
         const tg = window.Telegram.WebApp;
         tg.expand();
 
-        // Ваш список моделей та марок
         const carData = {
           "cars": [
             {"brand": "Alfa Romeo", "models": ["145", "146", "147", "155", "156", "159", "164", "166", "4C", "8C", "Brera", "Giulia", "Giulietta", "GT", "GTV", "MiTo", "Spider", "Stelvio", "Tonale"]},
@@ -152,7 +151,6 @@
         const brandSelect = document.getElementById('brand');
         const modelSelect = document.getElementById('model');
 
-        // Наповнення списку марок при завантаженні
         carData.cars.forEach(item => {
             let opt = document.createElement('option');
             opt.value = item.brand;
@@ -185,12 +183,12 @@
                 brand: brandSelect.value,
                 model: modelSelect.value,
                 max_price: document.getElementById('max_price').value,
-                min_year: document.getElementById('min_year').value,
+                // ЗМІНЕНО ТУТ: тепер беремо значення з max_year
+                max_year: document.getElementById('max_year').value, 
                 max_mileage: document.getElementById('max_mileage').value,
                 duration: document.getElementById('duration').value
             };
             
-            // Відправка даних у Telegram бот
             tg.sendData(JSON.stringify(data));
             tg.close();
         }
